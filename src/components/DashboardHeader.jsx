@@ -4,8 +4,15 @@ const DashboardHeader = () => {
     return (
         <section className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 px-4 md:px-0">
             <div>
-                <h1 className="text-4xl font-extrabold text-on-surface font-headline tracking-tight">Patient Cycle Dashboard</h1>
-                <p className="text-outline font-body mt-1">Cycle Overview - Day 1 to 28 • Patient ID: #FERT-8821</p>
+                <h1 className="text-3xl md:text-4xl font-extrabold text-on-surface font-headline tracking-tight">Patient Cycle Dashboard</h1>
+                <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <p className="text-sm text-outline font-body">Cycle Overview - Day 1 to 28 • Patient ID: #FERT-8821</p>
+                    <span className="text-outline/40 hidden sm:inline">|</span>
+                    <p className="text-sm text-outline font-body font-semibold flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm" data-icon="calendar_month">calendar_month</span>
+                        Cycle Length: 28 days
+                    </p>
+                </div>
             </div>
             <div className="flex flex-col md:flex-row items-center gap-6">
                 <div className="text-right">
