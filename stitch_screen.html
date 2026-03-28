@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CycleAnalytics | Clinician Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .medical-sheen {
+            background: linear-gradient(135deg, #00478d 0%, #005eb8 100%);
+        }
+        .scanline {
+            width: 1px;
+            background-color: #727783;
+            height: 100%;
+        }
+        /* Custom scrollbar for clinical density */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f7f9fc; }
+        ::-webkit-scrollbar-thumb { background: #c2c6d4; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#f7f9fc",
+                        "outline": "#727783",
+                        "on-surface-variant": "#424752",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#00478d",
+                        "secondary": "#b6171e",
+                        "tertiary": "#005412",
+                        "surface-container": "#eceef1",
+                        "on-surface": "#191c1e",
+                        "primary-container": "#005eb8",
+                        "surface-container-low": "#f2f4f7",
+                        "surface-bright": "#f7f9fc",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c2c6d4"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary/10">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-[#f7f9fc] dark:bg-slate-900 border-b border-[#c2c6d4]/15 dark:border-slate-800 flex justify-between items-center w-full px-6 py-3 max-w-[100vw] fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tight text-[#00478d] dark:text-blue-400 font-headline">CycleAnalytics</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#00478d] dark:text-blue-400 font-bold border-b-2 border-[#00478d] pb-1 font-label text-sm" href="#">Patient Overview</a>
+<a class="text-[#727783] dark:text-slate-400 font-medium pb-1 hover:text-[#00478d] transition-colors font-label text-sm" href="#">Longitudinal View</a>
+<a class="text-[#727783] dark:text-slate-400 font-medium pb-1 hover:text-[#00478d] transition-colors font-label text-sm" href="#">Lab Results</a>
+<a class="text-[#727783] dark:text-slate-400 font-medium pb-1 hover:text-[#00478d] transition-colors font-label text-sm" href="#">Clinical Notes</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<input class="bg-surface-container-highest border-none rounded-md px-4 py-1.5 text-sm focus:ring-2 focus:ring-primary/20 w-64" placeholder="Search records..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1.5 text-outline text-lg" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-3 border-l border-outline-variant/30 pl-4">
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary transition-colors" data-icon="settings">settings</span>
+<button class="medical-sheen text-white px-4 py-1.5 rounded-md text-sm font-semibold hover:opacity-90 transition-opacity">Export Report</button>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-white/70 backdrop-blur-xl border-r border-[#c2c6d4]/15 pt-20 flex flex-col z-40 hidden md:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="medical_services">medical_services</span>
+</div>
+<span class="text-lg font-bold text-[#00478d] font-headline">Fertility Clinic</span>
+</div>
+<p class="text-[10px] uppercase tracking-wider text-outline font-semibold">Precision Unit B</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 text-[#727783] px-4 py-3 hover:bg-[#f2f4f7]/50 transition-all rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-[#f2f4f7] text-[#00478d] rounded-md px-4 py-3 font-semibold scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="show_chart">show_chart</span>
+<span class="font-medium">Cycle Trends</span>
+</a>
+<a class="flex items-center gap-3 text-[#727783] px-4 py-3 hover:bg-[#f2f4f7]/50 transition-all rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="Monitor_heart">monitor_heart</span>
+<span class="font-medium">Symptom Map</span>
+</a>
+<a class="flex items-center gap-3 text-[#727783] px-4 py-3 hover:bg-[#f2f4f7]/50 transition-all rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-medium">Medication</span>
+</a>
+<a class="flex items-center gap-3 text-[#727783] px-4 py-3 hover:bg-[#f2f4f7]/50 transition-all rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="font-medium">Patient Files</span>
+</a>
+</nav>
+<div class="p-4 border-t border-outline-variant/10">
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container-high py-2.5 rounded-md font-bold text-on-surface hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                Add Record
+            </button>
+</div>
+<div class="mt-auto p-4 space-y-1">
+<a class="flex items-center gap-3 text-outline px-4 py-2 hover:text-primary transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="support_agent">support_agent</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 text-outline px-4 py-2 hover:text-secondary transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+                Sign Out
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 pt-20 p-8 min-h-screen">
+<!-- Dashboard Header -->
+<section class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+<div>
+<h1 class="text-4xl font-extrabold text-on-surface font-headline tracking-tight">Patient Cycle Dashboard</h1>
+<p class="text-outline font-body mt-1">Cycle Overview - Day 1 to 28 • Patient ID: #FERT-8821</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<p class="text-label-sm font-bold text-primary uppercase tracking-widest">Current Status</p>
+<p class="text-2xl font-bold font-headline">Day 14 <span class="text-outline font-medium px-2">|</span> <span class="text-tertiary">Ovulation Phase</span></p>
+</div>
+<div class="flex gap-2">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-bold border border-secondary/20">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="priority_high">priority_high</span>
+                        LH Peak Detected
+                    </span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+                        BBT Rising
+                    </span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Main Visualization Area -->
+<div class="col-span-12 lg:col-span-9 flex flex-col gap-6">
+<!-- Multi-Layer Chart Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_8px_32px_rgba(25,28,30,0.06)] border border-outline-variant/15 relative">
+<div class="flex justify-between items-center mb-10">
+<div class="flex gap-6">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-sm font-bold text-on-surface">BBT (°C)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-sm font-bold text-on-surface">Pain Level</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="text-sm font-bold text-on-surface">Energy Level</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-1 rounded-lg flex">
+<button class="bg-surface-container-lowest px-4 py-1.5 rounded-md text-xs font-bold shadow-sm">Graph View</button>
+<button class="px-4 py-1.5 rounded-md text-xs font-medium text-outline hover:text-on-surface">Data Table</button>
+</div>
+</div>
+<!-- Visual Chart Simulation -->
+<div class="relative h-[450px] w-full border-l border-b border-outline-variant/40 flex items-end">
+<!-- Bleeding Background Bands -->
+<div class="absolute inset-0 flex">
+<!-- Day 1-5: Menstruation -->
+<div class="h-full bg-secondary/15 border-r border-secondary/10" style="width: 17.8%"></div>
+<!-- Day 6-12: Follicular -->
+<div class="h-full bg-transparent border-r border-outline-variant/10" style="width: 25%"></div>
+<!-- Day 13-16: Ovulation -->
+<div class="h-full bg-primary/5 border-r border-outline-variant/10" style="width: 14.2%"></div>
+<!-- Day 17-28: Luteal -->
+<div class="h-full bg-transparent" style="width: 43%"></div>
+</div>
+<!-- Scanline Indicator (Interaction Placeholder) -->
+<div class="absolute left-[48%] top-0 h-full w-[1px] bg-primary z-10">
+<div class="absolute -top-1 -left-1 w-2.5 h-2.5 rounded-full bg-primary"></div>
+<div class="absolute -bottom-8 -left-8 bg-on-surface text-white text-[10px] py-1 px-2 rounded">Day 14: LH Peak</div>
+</div>
+<!-- BBT Area (Blue) -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 400">
+<defs>
+<lineargradient id="blueGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00478d" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#00478d" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,320 Q50,325 100,315 T200,320 T300,330 T400,310 T500,280 T600,240 T700,220 T800,230 T900,245 T1000,260" fill="transparent" stroke="#00478d" stroke-width="3"></path>
+<path d="M0,320 Q50,325 100,315 T200,320 T300,330 T400,310 T500,280 T600,240 T700,220 T800,230 T900,245 T1000,260 V400 H0 Z" fill="url(#blueGradient)"></path>
+</svg>
+<!-- Pain Line (Red) -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 400">
+<path d="M0,100 L50,80 L100,150 L200,350 L400,380 L600,370 L800,300 L950,50 L1000,20" fill="transparent" stroke="#b6171e" stroke-dasharray="4 2" stroke-width="2"></path>
+</svg>
+<!-- Energy Line (Green) -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 400">
+<path d="M0,350 C100,360 200,280 300,200 S500,50 600,80 S800,180 1000,300" fill="transparent" stroke="#005412" stroke-width="2"></path>
+</svg>
+<!-- LH Markers -->
+<div class="absolute inset-0 w-full h-full pointer-events-none">
+<div class="absolute left-[10%] bottom-[60%] flex flex-col items-center">
+<span class="material-symbols-outlined text-[10px] text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="text-[8px] text-outline font-bold">LOW</span>
+</div>
+<div class="absolute left-[35%] bottom-[75%] flex flex-col items-center">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="change_history" style="font-variation-settings: 'FILL' 1;">change_history</span>
+<span class="text-[8px] text-outline font-bold uppercase">High</span>
+</div>
+<div class="absolute left-[48.5%] bottom-[88%] flex flex-col items-center">
+<span class="material-symbols-outlined text-lg text-secondary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[8px] text-secondary font-bold uppercase">Peak</span>
+</div>
+</div>
+</div>
+<!-- X Axis Labels -->
+<div class="flex justify-between mt-4 px-2 text-label-sm font-semibold text-outline">
+<span>Day 1</span>
+<span>Day 7</span>
+<span>Day 14</span>
+<span>Day 21</span>
+<span>Day 28</span>
+</div>
+<!-- Flow Intensity Indicator (Bottom) -->
+<div class="mt-8 flex items-center gap-4">
+<span class="text-[10px] font-bold text-outline uppercase tracking-wider">Bleeding:</span>
+<div class="flex gap-4">
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-[#5c0b0f] rounded-sm"></div> <span class="text-[10px]">Heavy</span></div>
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-[#b6171e] rounded-sm"></div> <span class="text-[10px]">Medium</span></div>
+<div class="flex items-center gap-2"><div class="w-3 h-3 bg-[#fbb6bc] rounded-sm"></div> <span class="text-[10px]">Light</span></div>
+<div class="flex items-center gap-2"><div class="w-3 h-3 border border-outline-variant/40 rounded-sm"></div> <span class="text-[10px]">None</span></div>
+</div>
+</div>
+</div>
+<!-- Clinical Summary Footer Panels -->
+<div class="grid grid-cols-4 gap-4">
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10">
+<p class="text-label-sm font-bold text-outline uppercase">Average BBT</p>
+<p class="text-2xl font-bold font-headline mt-1 text-primary">36.65°C</p>
+<div class="mt-2 flex items-center text-[10px] text-tertiary font-bold">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="check_circle">check_circle</span>
+                            In range
+                        </div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10">
+<p class="text-label-sm font-bold text-outline uppercase">Max Pain Level</p>
+<p class="text-2xl font-bold font-headline mt-1 text-secondary">8/10</p>
+<p class="mt-2 text-[10px] text-outline italic">Recorded Day 1 &amp; 2</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10">
+<p class="text-label-sm font-bold text-outline uppercase">Energy Trend</p>
+<p class="text-2xl font-bold font-headline mt-1 text-tertiary">Positive</p>
+<p class="mt-2 text-[10px] text-outline">Peaked Day 12</p>
+</div>
+<div class="bg-primary/5 p-5 rounded-xl border border-primary/20">
+<p class="text-label-sm font-bold text-primary uppercase">Cycle Type</p>
+<p class="text-lg font-bold font-headline mt-1 text-on-surface leading-tight">Normal Ovulatory Cycle</p>
+<p class="mt-1 text-[10px] text-outline">98% Confidence Match</p>
+</div>
+</div>
+</div>
+<!-- Right Panel: Key Events -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_32px_rgba(25,28,30,0.06)] border border-outline-variant/15 flex-1">
+<h2 class="text-title-md font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="event_note">event_note</span>
+                        Key Cycle Events
+                    </h2>
+<div class="space-y-8 relative">
+<!-- Timeline Vertical Line -->
+<div class="absolute left-4 top-2 bottom-2 w-0.5 bg-surface-container-high"></div>
+<!-- Event 1 -->
+<div class="relative pl-10">
+<div class="absolute left-2.5 top-0 w-3.5 h-3.5 rounded-full bg-secondary border-4 border-surface-container-lowest z-10"></div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider">Day 1 - 2</p>
+<h3 class="text-sm font-bold mt-0.5">Peak Pain Phase</h3>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Secondary dysmenorrhea reported. Pain intensity 8/10 with high analgesic requirement.</p>
+</div>
+<!-- Event 2 -->
+<div class="relative pl-10">
+<div class="absolute left-2.5 top-0 w-3.5 h-3.5 rounded-full bg-tertiary border-4 border-surface-container-lowest z-10"></div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider">Day 11 - 12</p>
+<h3 class="text-sm font-bold mt-0.5">Highest Energy Window</h3>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Clinically high vitality score. Correlates with rising estrogen levels.</p>
+</div>
+<!-- Event 3 -->
+<div class="relative pl-10">
+<div class="absolute left-2.5 top-0 w-3.5 h-3.5 rounded-full bg-primary border-4 border-surface-container-lowest z-10"></div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider">Day 13 - 14</p>
+<h3 class="text-sm font-bold mt-0.5">Ovulation Window</h3>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">LH surge confirmed via testing. Basal body temperature shift observed (+0.35°C).</p>
+</div>
+<!-- Event 4 -->
+<div class="relative pl-10">
+<div class="absolute left-2.5 top-0 w-3.5 h-3.5 rounded-full bg-outline border-4 border-surface-container-lowest z-10"></div>
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider">Day 16</p>
+<h3 class="text-sm font-bold mt-0.5">Progesterone Shift</h3>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Transition into luteal phase. Sustained thermal rise documented.</p>
+</div>
+</div>
+<!-- Clinical Action Card -->
+<div class="mt-12 bg-surface-container-low p-4 rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+<span class="text-xs font-bold text-on-surface">Clinician Note</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed italic">
+                            "Patient shows classic biphasic BBT pattern. Pain levels during early phase warrant follow-up for potential endometriosis screening."
+                        </p>
+<button class="mt-4 w-full text-xs font-bold text-primary hover:underline flex justify-center items-center gap-1">
+                            Edit Clinical Impression
+                            <span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<footer class="md:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-outline-variant/20 flex justify-around items-center py-3 z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-outline" href="#">
+<span class="material-symbols-outlined" data-icon="show_chart">show_chart</span>
+<span class="text-[10px] font-medium">Trends</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-outline" href="#">
+<span class="material-symbols-outlined" data-icon="Monitor_heart">monitor_heart</span>
+<span class="text-[10px] font-medium">Map</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-outline" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="text-[10px] font-medium">Records</span>
+</a>
+</footer>
+</body></html>
