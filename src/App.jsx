@@ -9,12 +9,27 @@ import MainChart from './components/MainChart'
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex h-full w-full">
-      <TopNavBar />
-      <SideNavBar isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded} />
-      <main className={`flex-1 p-8 pt-20 transition-all duration-300 min-h-screen ${isSidebarExpanded ? 'md:ml-64' : 'md:ml-[4.5rem]'}`}>
+      <TopNavBar onMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+
+      {/* Overlay for mobile clicking */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      <SideNavBar
+        isExpanded={isSidebarExpanded}
+        setIsExpanded={setIsSidebarExpanded}
+        isMobileOpen={isMobileMenuOpen}
+        setIsMobileOpen={setIsMobileMenuOpen}
+      />
+      <main className={`flex-1 p-4 sm:p-6 md:p-8 pt-20 transition-all duration-300 min-h-screen w-full max-w-full overflow-hidden ${isSidebarExpanded ? 'md:ml-64' : 'md:ml-[4.5rem]'}`}>
         <DashboardHeader />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
           <div className="lg:col-span-9 flex flex-col gap-6">
